@@ -6,11 +6,17 @@ using namespace std;
 
 namespace Flow 
 {
+	struct CellCache
+	{
+		vector<int> Indices;
+		int FrameCalculated;
+	};
+
 	class FluidGrid
 	{
 	public:
 		FluidGrid();
-		FluidGrid(shared_ptr<ParticleVector> particles, int x, int y);
+		FluidGrid(shared_ptr<ParticleVector> particles, int density, int sim_w, int sim_h);
 		~FluidGrid();
 
 		FLOW_API void Update();
@@ -19,11 +25,18 @@ namespace Flow
 		shared_ptr<ParticleVector> Particles;
 		
 	private:
-		int Width, Height;
+
+		FLOW_API inline int Index(int x, int y);
+
+		int Density, Width, Height, Frame;
 
 		//amount of ints to reserve for in each cell.
-		int CellReservation = 100;
+		int CellReservation = 40;
+
+		//cache invalidation time in frames
+		int CacheInvalidationTime = 1;
 
 		vector<vector<int>> Grid;
+		vector<CellCache> Cache;
 	};
 }

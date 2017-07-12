@@ -3,7 +3,8 @@
 
 int main()
 {
-	const int WindowWidth = 600, WindowHeight = 600;
+	const int Scale = 600;
+	const int WindowWidth = 1200, WindowHeight = 600;
 
 	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "SFML works!");
 	sf::Clock deltaClock;
@@ -43,12 +44,15 @@ int main()
 
 		window.clear();
 
+		auto color = sf::Color::Blue;
+		color.b = 200;
 		for (auto p : *particles)
 		{
-			auto circle = sf::CircleShape(5);
-			circle.setFillColor(sf::Color::Blue);
+			auto circle = sf::CircleShape(7);
+			color.g = color.r = 10 + fmaxf(0, fminf(200, (-p.Pressure * p.Pressure * 0.2 + p.Velocity.lengthSq()) * 10));
+			circle.setFillColor(p.ID == 1500 ? sf::Color::Red : color);
 			circle.setPosition(
-				sf::Vector2f(p.Position.x * WindowWidth - 5, WindowHeight * (1.f - p.Position.y) - 5));
+				sf::Vector2f(p.Position.x * Scale - 3.5, Scale * (1.f - p.Position.y) - 3.5));
 
 			window.draw(circle);
 		}

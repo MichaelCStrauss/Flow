@@ -14,6 +14,8 @@ namespace Flow
 		float Density;
 		float Pressure;
 		float Mass;
+
+		int ID;
 	};
 
 	typedef std::vector<Particle> ParticleVector;

@@ -6,8 +6,9 @@ using namespace std;
 FluidSystem::FluidSystem()
 {
 	Particles = make_shared<vector<Particle>>(vector<Particle>());
-	int n = 1 / h;
-	Grid = FluidGrid(Particles, n, n);
+	Width = 2;
+	Height = 1;
+	Grid = FluidGrid(Particles, 1/h, Width, Height);
 	h2 = h * h;
 
 	DensityKernelConst = 315.f / (64 * 3.1416f * pow(h, 9));
@@ -34,7 +35,8 @@ void FluidSystem::InitParticles()
 		{
 			auto p = Particle();
 			p.Mass = ParticleMass;
-			p.Position = Vector2f(0.1 + (0.5 / Num) * x, 0.9 - (0.5 / Num) * y);
+			p.Position = Vector2f(0.01 + (0.5 / Num) * (x + 0.5 * (y % 2)), Height - (0.7 / Num) * y);
+			p.ID = x * Num + y;
 
 			Particles->push_back(p);
 		}
@@ -66,6 +68,10 @@ void FluidSystem::CalculateDensity()
 	for (auto &p : *Particles)
 	{
 		auto neighbours = Grid.GetNeighbourIndices(p);
+		if (neighbours.size() == 0)
+		{
+			std::cout << "no neighbours";
+		}
 		p.Density = 0;
 
 		for (auto index : neighbours)
@@ -87,6 +93,11 @@ void FluidSystem::CalculateForces()
 		auto pressure = Vector2f();
 		auto viscosity = Vector2f();
 
+		if (p.ID == 1500)
+		{
+			p.Density++;
+		}
+
 		for (auto index : neighbours)
 		{
 			auto r = p.Position - (*Particles)[index].Position;
@@ -95,15 +106,15 @@ void FluidSystem::CalculateForces()
 			pressure += PressureKernel(r) * p.Mass * -(p.Pressure + (*Particles)[index].Pressure) / (2 * (*Particles)[index].Density);
 			if (isnan(pressure.x) || isnan(pressure.y))
 			{
-				std::cout << "oh no";
-				return;
+				std::cout << "NaN Pressure";
+				continue;
 			}
 
-			//now use the viscosity
+			//now calculate the viscosity
 			viscosity += ((*Particles)[index].Velocity - p.Velocity) * p.Mass  / ((*Particles)[index].Density) * ViscosityKernel(r) * mu;
 		}
 
-		p.Acceleration = pressure + viscosity + Vector2f(0, Gravity);
+		p.Acceleration = (pressure + viscosity + Vector2f(0, Gravity)) / p.Density;
 
 		//std::cout << p.Acceleration.x << " " << p.Acceleration.y << endl;
 	}
@@ -114,25 +125,25 @@ void FluidSystem::ResolveCollisions()
 	//Boundary Conditions
 	for (auto &p : *Particles)
 	{
-		if (p.Position.x > 1)
+		if (p.Position.x > Width)
 		{
-			p.Position.x = 1;
-			p.Velocity.x *= -0.5;
+			p.Position.x = Width;
+			p.Velocity.x *= -1;
 		}
 		if (p.Position.x < 0)
 		{
 			p.Position.x = 0;
-			p.Velocity.x *= -0.5;
+			p.Velocity.x *= -1;
 		}
-		if (p.Position.y > 1)
+		if (p.Position.y > Height)
 		{
-			p.Position.y = 1;
-			p.Velocity.y *= -0.5;
+			p.Position.y = Height;
+			p.Velocity.y *= -1;
 		}
 		if (p.Position.y < 0)
 		{
 			p.Position.y = 0;
-			p.Velocity.y *= -0.5;
+			p.Velocity.y *= -1;
 		}
 	}
 }
@@ -158,8 +169,7 @@ Vector2f FluidSystem::PressureKernel(Vector2f r)
 	else
 	{
 		auto l = r.length();
-		auto ret =  r * (1 / l) *  -PressureKernelConst * pow(h - l, 2);
-		return ret;
+		return r * (1 / l) *  -PressureKernelConst * pow(h - l, 2);
 	}
 }
 
