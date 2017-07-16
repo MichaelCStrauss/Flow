@@ -10,6 +10,9 @@
     <Filter Include="Simulation">
       <UniqueIdentifier>{1cbd805e-c86a-426e-9c65-ce9c8dc8f51e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="glad">
+      <UniqueIdentifier>{abe16ef8-649b-463b-9762-54f171199bdd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -42,6 +45,12 @@
     <ClInclude Include="Particle.h">
       <Filter>Simulation</Filter>
     </ClInclude>
+    <ClInclude Include="..\glad\include\glad\glad.h">
+      <Filter>glad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\glad\include\KHR\khrplatform.h">
+      <Filter>glad</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FluidRenderer.cpp">
@@ -58,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="FluidSystem.cpp">
       <Filter>Simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glad\src\glad.c">
+      <Filter>glad</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
