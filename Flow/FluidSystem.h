@@ -34,18 +34,18 @@ namespace Flow
 
 		FluidGrid Grid;
 
-		int Num = 50;
+		int Num = 30;
 
 		float Width, Height;
 
 		//Fluid Constants
 		float TimeStep = 0.20f;
 		float Gravity = -10000;
-		float ParticleMass = 0.004;
+		float ParticleMass = 0.018;
 		float RestDensity = 1000;
 		float k = 2.8;
 		float mu = 4;
-		float h = 0.025;
+		float h = 0.035;
 		float h2;
 
 		float BoundaryDamping = 0.2;
