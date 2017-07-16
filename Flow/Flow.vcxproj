@@ -91,9 +91,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FLOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>D:\Dev\glfw-3.2.1-build\src\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,11 +120,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FLOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\Dev\glfw-3.2.1-build\src\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +153,7 @@
     <ClInclude Include="dll.h" />
     <ClInclude Include="Flow.h" />
     <ClInclude Include="FluidGrid.h" />
+    <ClInclude Include="FluidRenderer.h" />
     <ClInclude Include="FluidSystem.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="stdafx.h" />
@@ -155,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FluidGrid.cpp" />
+    <ClCompile Include="FluidRenderer.cpp" />
     <ClCompile Include="FluidSystem.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="vmath.cpp" />
