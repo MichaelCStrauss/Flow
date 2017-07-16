@@ -48,6 +48,8 @@ namespace Flow
 		float h = 0.025;
 		float h2;
 
+		float BoundaryDamping = 0.2;
+
 		int Frame = 0;
 
 		float DensityKernelConst;

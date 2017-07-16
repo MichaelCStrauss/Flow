@@ -128,22 +128,22 @@ void FluidSystem::ResolveCollisions()
 		if (p.Position.x > Width)
 		{
 			p.Position.x = Width;
-			p.Velocity.x *= -1;
+			p.Velocity.x *= -BoundaryDamping;
 		}
 		if (p.Position.x < 0)
 		{
 			p.Position.x = 0;
-			p.Velocity.x *= -1;
+			p.Velocity.x *= -BoundaryDamping;
 		}
 		if (p.Position.y > Height)
 		{
 			p.Position.y = Height;
-			p.Velocity.y *= -1;
+			p.Velocity.y *= -BoundaryDamping;
 		}
 		if (p.Position.y < 0)
 		{
 			p.Position.y = 0;
-			p.Velocity.y *= -1;
+			p.Velocity.y *= -BoundaryDamping;
 		}
 	}
 }
