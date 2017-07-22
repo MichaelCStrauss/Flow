@@ -15,12 +15,13 @@ namespace Flow
 	class FluidGrid
 	{
 	public:
-		FluidGrid();
-		FluidGrid(shared_ptr<ParticleVector> particles, int density, int sim_w, int sim_h);
-		~FluidGrid();
+		FLOW_API FluidGrid();
+		FLOW_API FluidGrid(shared_ptr<ParticleVector> particles, int density, int sim_w, int sim_h);
+		FLOW_API ~FluidGrid();
 
 		FLOW_API void Update();
 		FLOW_API vector<int> GetNeighbourIndices(Particle particle);
+		FLOW_API vector<int> GetNeighbourIndices(float x, float y);
 
 		shared_ptr<ParticleVector> Particles;
 		

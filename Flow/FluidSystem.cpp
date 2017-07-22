@@ -6,7 +6,7 @@ using namespace std;
 FluidSystem::FluidSystem()
 {
 	Particles = make_shared<vector<Particle>>(vector<Particle>());
-	Width = 2;
+	Width = 1;
 	Height = 1;
 	Grid = FluidGrid(Particles, 1/h, Width, Height);
 	h2 = h * h;
@@ -41,6 +41,19 @@ void FluidSystem::InitParticles()
 			Particles->push_back(p);
 		}
 	}
+}
+
+float FluidSystem::EvaluateDensity(Vector2f pos)
+{
+	float density = 0;
+	auto neighbours = Grid.GetNeighbourIndices(pos.x, pos.y);
+
+	for (auto index : neighbours)
+	{
+		auto r = pos - (*Particles)[index].Position;
+		density += (*Particles)[index].Mass * DensityKernel(r);
+	}
+	return density;
 }
 
 void FluidSystem::Update(float deltaTime)

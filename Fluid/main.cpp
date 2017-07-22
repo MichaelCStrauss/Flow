@@ -1,3 +1,7 @@
+#ifdef _WIN32
+    #define APIENTRY __stdcall
+#endif
+
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include <SFML\System.hpp>
@@ -5,8 +9,8 @@
 
 int main()
 {
-	const int Scale = 600;
-	const int WindowWidth = 1200, WindowHeight = 600;
+	const int Scale = 800;
+	const int WindowWidth = 700, WindowHeight = 700;
 
 	glfwInit();
 	
@@ -18,13 +22,23 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	auto window = glfwCreateWindow(WindowWidth, WindowHeight, "Fluid", nullptr, nullptr); // Windowed
+	if (!window)
+	{
+		return -1;
+	}
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(0);
 
-	gladLoadGL();
+	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+	if (!gladLoadGL())
+		return -1;
 
-	auto system = Flow::FluidSystem();
-	system.Init();
-	auto particles = system.Particles;
+	auto system = std::make_shared<Flow::FluidSystem>();
+	system->Init();
+	auto particles = system->Particles;
+
+	auto renderer = Flow::FluidRenderer();
+	renderer.Init(system);
 
 	sf::Clock deltaClock; 
 	int frames = 0;
@@ -49,14 +63,17 @@ int main()
 			std::cout << frames << std::endl;
 			frames = 0;
 		}
-		system.Update(time);
+		system->Update(time);
 
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		renderer.Draw();
+
 		glfwSwapBuffers(window);
 	}
 
+	renderer.End();
 	glfwTerminate();
 
 	return 0;

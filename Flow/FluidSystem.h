@@ -21,7 +21,12 @@ namespace Flow
 
 		FLOW_API void InitParticles();
 
+		FLOW_API float EvaluateDensity(Vector2f position);
+
 		shared_ptr<ParticleVector> Particles;
+
+		float Width, Height;
+		int Frame = 0;
 
 	private:
 		FLOW_API void CalculateDensity();
@@ -36,7 +41,6 @@ namespace Flow
 
 		int Num = 30;
 
-		float Width, Height;
 
 		//Fluid Constants
 		float TimeStep = 0.20f;
@@ -50,7 +54,6 @@ namespace Flow
 
 		float BoundaryDamping = 0.2;
 
-		int Frame = 0;
 
 		float DensityKernelConst;
 		float PressureKernelConst;
