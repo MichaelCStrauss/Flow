@@ -39,8 +39,8 @@ namespace Flow
 		GLuint vbo, vao;
 
 		//parameters
-		int Resolution = 100;
-		float DensityThreshold = 700;
+		int Resolution = 150;
+		float DensityThreshold = 600;
 		float CellW, CellH;
 	};
 }
