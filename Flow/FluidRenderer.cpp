@@ -112,7 +112,7 @@ void FluidRenderer::UpdateGeometry()
 			//evaluate the value of the field and store it
 			auto sim_pos = ScreenCoordsToSim(Vector2f(screen_x, screen_y));
 			auto density = System->EvaluateDensity(sim_pos);
-			cells[i * Resolution + j] = density > DensityThreshold;
+			cells[i * Resolution + j] = density;
 
 			//if we're on an edge, continue
 			if (i == 0 || j == 0)
@@ -126,10 +126,10 @@ void FluidRenderer::UpdateGeometry()
 
 			//the configuration of the desired geometry
 			int configuration = 0;
-			configuration += fieldSW;
-			configuration += 2 * fieldSE;
-			configuration += 4 * fieldNE;
-			configuration += 8 * fieldNW;
+			configuration += fieldSW > DensityThreshold;
+			configuration += 2 * (fieldSE > DensityThreshold);
+			configuration += 4 * (fieldNE > DensityThreshold);
+			configuration += 8 * (fieldNW > DensityThreshold);
 
 			AddVertices(configuration, screen_x, screen_y, i, j);
 		}
@@ -157,6 +157,14 @@ void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_
 	W = Vector2f(screen_x - CellW, screen_y - 0.5 * CellH);
 	NW = Vector2f(screen_x - CellW, screen_y);
 
+	if ((configuration & 1) != (configuration & 2))
+		S.x = Utilities::LERP(fieldSW, fieldSE, SW.x, SE.x, DensityThreshold);
+	if ((configuration & 1) != (configuration & 8))
+		W.y = Utilities::LERP(fieldSW, fieldNW, SW.y, NW.y, DensityThreshold);
+	if ((configuration & 2) != (configuration & 4))
+		E.y = Utilities::LERP(fieldSE, fieldNE, SE.y, NE.y, DensityThreshold);
+	if ((configuration & 4) != (configuration & 8))
+		N.x = Utilities::LERP(fieldNW, fieldNE, NW.x, NE.x, DensityThreshold);
 
 	switch (configuration)
 	{
@@ -222,8 +230,8 @@ void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_
 		AddVert(SE); //bottom right
 
 		AddVert(N);
-		AddVert(SE); //bottom right
 		AddVert(NE); //top right
+		AddVert(SE); //bottom right
 		break;
 	case 8:
 		AddVert(NW);
