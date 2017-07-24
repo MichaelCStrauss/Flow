@@ -20,6 +20,8 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 
 	auto window = glfwCreateWindow(WindowWidth, WindowHeight, "Fluid", nullptr, nullptr); // Windowed
 	if (!window)
@@ -32,6 +34,8 @@ int main()
 	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	if (!gladLoadGL())
 		return -1;
+
+	glEnable(GL_MULTISAMPLE);
 
 	auto system = std::make_shared<Flow::FluidSystem>();
 	system->Init();
