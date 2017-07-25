@@ -10,7 +10,7 @@
 int main()
 {
 	const int Scale = 800;
-	const int WindowWidth = 1000, WindowHeight = 750;
+	const int WindowWidth = 1000, WindowHeight = 666;
 
 	glfwInit();
 	
