@@ -47,8 +47,9 @@ void FluidRenderer::InitShaders()
 	auto vert_shader_src = Utilities::LoadShaderFromFile("basic_vertex.glsl");
 	auto frag_shader_src = Utilities::LoadShaderFromFile("basic_fragment.glsl");
 
+	auto c_str = vert_shader_src.c_str();
 	auto vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vert_shader_src, NULL);
+	glShaderSource(vertexShader, 1, &c_str, NULL);
 	glCompileShader(vertexShader);
 	GLint status;
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
@@ -60,8 +61,9 @@ void FluidRenderer::InitShaders()
 		exit(-1);
 	}
 
+	c_str = frag_shader_src.c_str();
 	auto fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragShader, 1, &frag_shader_src, NULL);
+	glShaderSource(fragShader, 1, &c_str, NULL);
 	glCompileShader(fragShader);
 	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &status);
 	if (status != GL_TRUE)
