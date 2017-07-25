@@ -21,8 +21,11 @@ void FluidRenderer::Init(shared_ptr<FluidSystem> system)
 	InitGeometry();
 	InitShaders();
 
-	CellW = 2 / ((float)Resolution - 1);
-	CellH = 2 / ((float)Resolution - 1);
+	CellsX = System->Width * Resolution;
+	CellsY = System->Height * Resolution;
+
+	CellW = 2 / ((float)CellsX - 1);
+	CellH = 2 / ((float)CellsY - 1);
 
 	return;
 }
@@ -100,13 +103,15 @@ void FluidRenderer::Draw()
 
 void FluidRenderer::UpdateGeometry()
 {
-	vertices = std::vector<float>();
-	vertices.reserve((Resolution + 1) * (Resolution + 1) * 2);
-	cells = std::vector<float>((Resolution + 1) * (Resolution + 1));
+	vertices = std::vector<float>(); //empty vector with enough reserved memory
+	vertices.reserve((CellsX) * (CellsY) * 2);
 
-	for (int i = 0; i < Resolution; i++)
+	// pre filled vector
+	cells = std::vector<float>((CellsX) * (CellsY));
+
+	for (int i = 0; i < CellsX; i++)
 	{
-		for (int j = 0; j < Resolution; j++)
+		for (int j = 0; j < CellsY; j++)
 		{
 			float screen_x = ((float)i * CellW) - 1.0f;
 			float screen_y = ((float)j * CellH) - 1.0f;
@@ -114,17 +119,17 @@ void FluidRenderer::UpdateGeometry()
 			//evaluate the value of the field and store it
 			auto sim_pos = ScreenCoordsToSim(Vector2f(screen_x, screen_y));
 			auto density = System->EvaluateDensity(sim_pos);
-			cells[i * Resolution + j] = density;
+			cells[i * CellsY + j] = density;
 
 			//if we're on an edge, continue
 			if (i == 0 || j == 0)
 				continue;
 
 			//the value of the field at the corners
-			auto fieldNE = cells[(i)* Resolution + j];
-			auto fieldNW = cells[(i - 1) * Resolution + j];
-			auto fieldSW = cells[(i - 1) * Resolution + j - 1];
-			auto fieldSE = cells[(i)* Resolution + j - 1];
+			auto fieldNE = cells[(i)* CellsY + j];
+			auto fieldNW = cells[(i - 1) * CellsY + j];
+			auto fieldSW = cells[(i - 1) * CellsY + j - 1];
+			auto fieldSE = cells[(i)* CellsY + j - 1];
 
 			//the configuration of the desired geometry
 			int configuration = 0;
@@ -144,10 +149,10 @@ void FluidRenderer::UpdateGeometry()
 void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_y, int i, int j)
 {
 	//the value of the field at the corners
-	auto fieldNE = cells[(i)* Resolution + j];
-	auto fieldNW = cells[(i - 1) * Resolution + j];
-	auto fieldSW = cells[(i - 1) * Resolution + j - 1];
-	auto fieldSE = cells[(i)* Resolution + j - 1];
+	auto fieldNE = cells[(i)* CellsY + j];
+	auto fieldNW = cells[(i - 1) * CellsY + j];
+	auto fieldSW = cells[(i - 1) * CellsY + j - 1];
+	auto fieldSE = cells[(i)* CellsY + j - 1];
 
 	Vector2f N, NE, E, SE, S, SW, W, NW;
 	N = Vector2f(screen_x - 0.5 * CellW, screen_y);

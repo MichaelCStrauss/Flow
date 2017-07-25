@@ -40,6 +40,7 @@ namespace Flow
 
 		//parameters
 		int Resolution = 150;
+		int CellsX, CellsY;
 		float DensityThreshold = 600;
 		float CellW, CellH;
 	};
