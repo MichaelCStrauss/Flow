@@ -6,8 +6,8 @@ using namespace std;
 FluidSystem::FluidSystem()
 {
 	Particles = make_shared<vector<Particle>>(vector<Particle>());
-	Width = 2;
-	Height = 1;
+	Width = 1;
+	Height = 0.75;
 	Grid = FluidGrid(Particles, 1/h, Width, Height);
 	h2 = h * h;
 

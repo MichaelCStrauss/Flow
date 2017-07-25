@@ -8,7 +8,7 @@ Flow::FluidGrid::FluidGrid()
 {
 }
 
-FluidGrid::FluidGrid(shared_ptr<ParticleVector> particles, int density, int sim_w, int sim_h)
+FluidGrid::FluidGrid(shared_ptr<ParticleVector> particles, int density, float sim_w, float sim_h)
 {
 	Particles = particles;
 	Density = density;
