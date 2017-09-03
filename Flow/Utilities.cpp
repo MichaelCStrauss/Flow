@@ -15,6 +15,19 @@ std::string Flow::Utilities::LoadShaderFromFile(char * filename)
 	return stream.str();
 }
 
+void Flow::Utilities::CheckShaderError(GLuint shader)
+{
+	GLint status;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	if (status != GL_TRUE)
+	{
+		char buffer[512];
+		glGetShaderInfoLog(shader, 512, NULL, buffer);
+		std::cout << buffer << std::endl;
+		exit(-1);
+	}
+}
+
 float Flow::Utilities::LERP(float x0, float x1, float y0, float y1, float x)
 {
 	return y0 + (y1 - y0) * (x - x0) / (x1 - x0);

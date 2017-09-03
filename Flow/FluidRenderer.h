@@ -38,7 +38,8 @@ namespace Flow
 		vector<float> cells;
 		vector<float> vertices;
 
-		GLuint vbo, vao;
+		GLuint meshVBO, meshVAO, transVAO;
+		GLuint basicProgram, transProgram;
 
 		//parameters
 		int Resolution = 150;

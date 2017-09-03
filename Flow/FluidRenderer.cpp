@@ -54,38 +54,23 @@ void FluidRenderer::InitShaders()
 	auto vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &c_str, NULL);
 	glCompileShader(vertexShader);
-	GLint status;
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-	if (status != GL_TRUE)
-	{
-		char buffer[512];
-		glGetShaderInfoLog(vertexShader, 512, NULL, buffer);
-		std::cout << buffer << std::endl;
-		exit(-1);
-	}
+	Utilities::CheckShaderError(vertexShader);
 
 	c_str = frag_shader_src.c_str();
 	auto fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragShader, 1, &c_str, NULL);
 	glCompileShader(fragShader);
-	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &status);
-	if (status != GL_TRUE)
-	{
-		char buffer[512];
-		glGetShaderInfoLog(fragShader, 512, NULL, buffer);
-		std::cout << buffer << std::endl;
-		exit(-1);
-	}
+	Utilities::CheckShaderError(fragShader);
 
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragShader);
+	basicProgram = glCreateProgram();
+	glAttachShader(basicProgram, vertexShader);
+	glAttachShader(basicProgram, fragShader);
 
-	glBindFragDataLocation(shaderProgram, 0, "outColor");
-	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
+	glBindFragDataLocation(basicProgram, 0, "outColor");
+	glLinkProgram(basicProgram);
+	glUseProgram(basicProgram);
 
-	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+	GLint posAttrib = glGetAttribLocation(basicProgram, "position");
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(posAttrib);
 	//GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
