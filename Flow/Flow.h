@@ -2,3 +2,4 @@
 
 #include "dll.h"
 #include "FluidSystem.h"
+#include "FluidRenderer.h"

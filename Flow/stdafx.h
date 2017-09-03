@@ -11,3 +11,7 @@
 #include <vector>
 #include <memory>
 #include "vmath.h"
+#include "Utilities.h"
+
+#include <glad\glad.h>
+#include <GLFW\glfw3.h>

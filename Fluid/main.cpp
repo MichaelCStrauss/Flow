@@ -1,29 +1,56 @@
-#include <SFML/Graphics.hpp>
+#ifdef _WIN32
+    #define APIENTRY __stdcall
+#endif
+
+#include <glad\glad.h>
+#include <GLFW\glfw3.h>
+#include <SFML\System.hpp>
 #include <Flow.h>
 
 int main()
 {
-	const int Scale = 600;
-	const int WindowWidth = 1200, WindowHeight = 600;
+	const int Scale = 800;
+	const int WindowWidth = 1000, WindowHeight = 666;
 
-	sf::RenderWindow window(sf::VideoMode(WindowWidth, WindowHeight), "SFML works!");
-	sf::Clock deltaClock;
+	glfwInit();
+	
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	auto system = Flow::FluidSystem();
-	system.Init();
-	auto particles = system.Particles;
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
+
+	auto window = glfwCreateWindow(WindowWidth, WindowHeight, "Fluid", nullptr, nullptr); // Windowed
+	if (!window)
+	{
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(0);
+
+	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+	if (!gladLoadGL())
+		return -1;
+
+	glEnable(GL_MULTISAMPLE);
+
+	auto system = std::make_shared<Flow::FluidSystem>();
+	system->Init();
+	auto particles = system->Particles;
+
+	auto renderer = Flow::FluidRenderer();
+	renderer.Init(system);
+
+	sf::Clock deltaClock; 
 	int frames = 0;
 	float t = 0;
 
-	while (window.isOpen())
+	while (!glfwWindowShouldClose(window))
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+		glfwPollEvents();
 
 		//If running in debug, run at constant timestep
 #ifdef NDEBUG
@@ -40,25 +67,18 @@ int main()
 			std::cout << frames << std::endl;
 			frames = 0;
 		}
-		system.Update(time);
+		system->Update(time);
 
-		window.clear();
+		glClearColor(0, 0, 0, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-		auto color = sf::Color::Blue;
-		color.b = 200;
-		for (auto p : *particles)
-		{
-			auto circle = sf::CircleShape(7);
-			color.g = color.r = 10 + fmaxf(0, fminf(200, (-p.Pressure * p.Pressure * 0.2 + p.Velocity.lengthSq()) * 10));
-			circle.setFillColor(p.ID == 1500 ? sf::Color::Red : color);
-			circle.setPosition(
-				sf::Vector2f(p.Position.x * Scale - 3.5, Scale * (1.f - p.Position.y) - 3.5));
+		renderer.Draw();
 
-			window.draw(circle);
-		}
-
-		window.display();
+		glfwSwapBuffers(window);
 	}
+
+	renderer.End();
+	glfwTerminate();
 
 	return 0;
 }

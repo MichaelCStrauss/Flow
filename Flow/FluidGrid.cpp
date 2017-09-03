@@ -8,7 +8,7 @@ Flow::FluidGrid::FluidGrid()
 {
 }
 
-FluidGrid::FluidGrid(shared_ptr<ParticleVector> particles, int density, int sim_w, int sim_h)
+FluidGrid::FluidGrid(shared_ptr<ParticleVector> particles, int density, float sim_w, float sim_h)
 {
 	Particles = particles;
 	Density = density;
@@ -53,10 +53,10 @@ FLOW_API void FluidGrid::Update()
 	}
 }
 
-FLOW_API std::vector<int> FluidGrid::GetNeighbourIndices(Particle particle)
+FLOW_API std::vector<int> FluidGrid::GetNeighbourIndices(float x, float y)
 {
-	int x = particle.Position.x * Density;
-	int y = particle.Position.y * Density;
+	x *= Density;
+	y *= Density;
 	auto index = Index(x, y);
 
 	//Check if this has been cached
@@ -82,6 +82,11 @@ FLOW_API std::vector<int> FluidGrid::GetNeighbourIndices(Particle particle)
 	Cache[index].Indices = neighbours;
 
 	return neighbours;
+}
+
+vector<int> FluidGrid::GetNeighbourIndices(Particle particle)
+{
+	return GetNeighbourIndices(particle.Position.x, particle.Position.y);
 }
 
 inline int FluidGrid::Index(int x, int y)
