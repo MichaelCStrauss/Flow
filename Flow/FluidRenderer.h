@@ -22,8 +22,10 @@ namespace Flow
 
 		void InitShaders();
 		void InitGeometry();
-		
+
 		void UpdateGeometry();
+
+		float EvaluateField(vector<int> &indices, float x, float y);
 
 		Vector2f ScreenCoordsToSim(Vector2f screen);
 
@@ -41,6 +43,7 @@ namespace Flow
 		//parameters
 		int Resolution = 150;
 		int CellsX, CellsY;
+		float ParticleRadius = 0.01; //this in sim terms
 		float DensityThreshold = 600;
 		float CellW, CellH;
 	};

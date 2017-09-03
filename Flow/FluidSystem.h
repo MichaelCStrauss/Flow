@@ -24,6 +24,10 @@ namespace Flow
 		FLOW_API float EvaluateDensity(Vector2f position);
 
 		shared_ptr<ParticleVector> Particles;
+		//start using a getter for the particles so that we can use mutexes in the future
+		FLOW_API shared_ptr<ParticleVector> getParticles();
+
+		FLOW_API vector<int> GetNearbyParticles(float x, float y);
 
 		float Width, Height;
 		int Frame = 0;

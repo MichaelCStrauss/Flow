@@ -56,6 +56,17 @@ float FluidSystem::EvaluateDensity(Vector2f pos)
 	return density;
 }
 
+shared_ptr<ParticleVector> FluidSystem::getParticles()
+{
+	//TODO: add a mutex for thread safety
+	return Particles;
+}
+
+vector<int> Flow::FluidSystem::GetNearbyParticles(float x, float y)
+{
+	return Grid.GetNeighbourIndices(x, y);
+}
+
 void FluidSystem::Update(float deltaTime)
 {
 	Grid.Update();

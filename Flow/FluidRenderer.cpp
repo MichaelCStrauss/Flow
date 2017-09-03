@@ -118,8 +118,8 @@ void FluidRenderer::UpdateGeometry()
 
 			//evaluate the value of the field and store it
 			auto sim_pos = ScreenCoordsToSim(Vector2f(screen_x, screen_y));
-			auto density = System->EvaluateDensity(sim_pos);
-			cells[i * CellsY + j] = density;
+			auto value = EvaluateField(System->GetNearbyParticles(sim_pos.x, sim_pos.y), sim_pos.x, sim_pos.y);
+			cells[i * CellsY + j] = value;
 
 			//if we're on an edge, continue
 			if (i == 0 || j == 0)
@@ -133,10 +133,10 @@ void FluidRenderer::UpdateGeometry()
 
 			//the configuration of the desired geometry
 			int configuration = 0;
-			configuration += fieldSW > DensityThreshold;
-			configuration += 2 * (fieldSE > DensityThreshold);
-			configuration += 4 * (fieldNE > DensityThreshold);
-			configuration += 8 * (fieldNW > DensityThreshold);
+			configuration += fieldSW >= 1;
+			configuration += 2 * (fieldSE >= 1);
+			configuration += 4 * (fieldNE >= 1);
+			configuration += 8 * (fieldNW >= 1);
 
 			AddVertices(configuration, screen_x, screen_y, i, j);
 		}
@@ -144,6 +144,21 @@ void FluidRenderer::UpdateGeometry()
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
+}
+
+float FluidRenderer::EvaluateField(vector<int> &indices, float x, float y)
+{
+	if (indices.size() == 0)
+		return 0;
+
+	auto particles = System->getParticles();
+	float value = 0;
+	for (auto index : indices)
+	{
+		auto particle = (*particles)[index];
+		value += (ParticleRadius * ParticleRadius) / (pow(x - particle.Position.x, 2) + pow(y - particle.Position.y, 2));
+	}
+	return value;
 }
 
 void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_y, int i, int j)
@@ -165,13 +180,13 @@ void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_
 	NW = Vector2f(screen_x - CellW, screen_y);
 
 	if ((configuration & 1) != (configuration & 2))
-		S.x = Utilities::LERP(fieldSW, fieldSE, SW.x, SE.x, DensityThreshold);
+		S.x = Utilities::LERP(fieldSW, fieldSE, SW.x, SE.x, 1);
 	if ((configuration & 1) != (configuration & 8))
-		W.y = Utilities::LERP(fieldSW, fieldNW, SW.y, NW.y, DensityThreshold);
+		W.y = Utilities::LERP(fieldSW, fieldNW, SW.y, NW.y, 1);
 	if ((configuration & 2) != (configuration & 4))
-		E.y = Utilities::LERP(fieldSE, fieldNE, SE.y, NE.y, DensityThreshold);
+		E.y = Utilities::LERP(fieldSE, fieldNE, SE.y, NE.y, 1);
 	if ((configuration & 4) != (configuration & 8))
-		N.x = Utilities::LERP(fieldNW, fieldNE, NW.x, NE.x, DensityThreshold);
+		N.x = Utilities::LERP(fieldNW, fieldNE, NW.x, NE.x, 1);
 
 	switch (configuration)
 	{
