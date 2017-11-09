@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FLOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +155,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FLOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -211,7 +211,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FLOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\glfw-3.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -256,50 +256,36 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\glad\include\glad\glad.h" />
-    <ClInclude Include="..\glad\include\KHR\khrplatform.h" />
-    <ClInclude Include="dll.h" />
-    <ClInclude Include="Flow.h" />
-    <ClInclude Include="FluidGrid.h" />
-    <ClInclude Include="FluidRenderer.h" />
-    <ClInclude Include="FluidSystem.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Utilities.h" />
-    <ClInclude Include="vmath.h" />
+    <ClInclude Include="include\Renderer\BasicRenderer.h" />
+    <ClInclude Include="include\dll.h" />
+    <ClInclude Include="include\Flow.h" />
+    <ClInclude Include="include\Renderer\FluidRenderer.h" />
+    <ClInclude Include="include\Simulation\FluidGrid.h" />
+    <ClInclude Include="include\Simulation\FluidSystem.h" />
+    <ClInclude Include="include\Simulation\Particle.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\Utilities.h" />
+    <ClInclude Include="include\vmath.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\glad\src\glad.c" />
-    <ClCompile Include="FluidGrid.cpp" />
-    <ClCompile Include="FluidRenderer.cpp" />
-    <ClCompile Include="FluidSystem.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Utilities.cpp" />
-    <ClCompile Include="vmath.cpp" />
+    <ClCompile Include="..\..\glad\src\glad.c" />
+    <ClCompile Include="src\Renderer\BasicRenderer.cpp" />
+    <ClCompile Include="src\Renderer\FluidRenderer.cpp" />
+    <ClCompile Include="src\Simulation\FluidGrid.cpp" />
+    <ClCompile Include="src\Simulation\FluidSystem.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\Utilities.cpp" />
+    <ClCompile Include="src\vmath.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="basic_vertex.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='DebugOptimised|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="basic_fragment.glsl">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) $(OutDir)\%(Filename).glsl</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugOptimised|Win32'">copy %(FullPath) $(OutDir)\%(Filename).glsl</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) $(OutDir)\%(Filename).glsl</Command>
-    </CustomBuild>
-    <CustomBuild Include="basic_vertex.glsl">
+    <CustomBuild Include="Shaders\basic_fragment.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="metaballs.glsl">
+    <CustomBuild Include="Shaders\basic_vertex.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="Shaders\metaballs.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
   </ItemGroup>

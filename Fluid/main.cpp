@@ -41,7 +41,7 @@ int main()
 	system->Init();
 	auto particles = system->Particles;
 
-	auto renderer = Flow::FluidRenderer();
+	auto renderer = Flow::FluidRendererOld();
 	renderer.Init(system);
 
 	sf::Clock deltaClock; 

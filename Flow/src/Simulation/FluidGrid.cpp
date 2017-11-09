@@ -1,4 +1,4 @@
-#include "FluidGrid.h"
+#include "Simulation/FluidGrid.h"
 #include <math.h>
 
 using namespace Flow;

@@ -8,11 +8,11 @@ using namespace std;
 
 namespace Flow
 {
-	class FluidRenderer
+	class FluidRendererOld
 	{
 	public:
-		FLOW_API FluidRenderer();
-		FLOW_API ~FluidRenderer();
+		FLOW_API FluidRendererOld();
+		FLOW_API ~FluidRendererOld();
 
 		FLOW_API void Init(shared_ptr<FluidSystem> system);
 		FLOW_API void Draw();

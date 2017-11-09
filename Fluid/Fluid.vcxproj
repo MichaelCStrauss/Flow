@@ -98,12 +98,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Dev\glfw-3.2.1-build\src\Release;D:\Dev\SFML-build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOptimised|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Dev\glfw-3.2.1-build\src\Release;D:\Dev\SFML-build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,7 +114,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Dev\glfw-3.2.1\include;D:\Dev\Fluid\glad\include;D:\Dev\Fluid\Flow\include;D:\Dev\SFML\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Dev\glfw-3.2.1-build\src\Release;D:\Dev\SFML-build\lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

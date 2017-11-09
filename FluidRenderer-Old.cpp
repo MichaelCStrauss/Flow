@@ -3,16 +3,16 @@
 using namespace Flow;
 using namespace std;
 
-FluidRenderer::FluidRenderer()
+FluidRendererOld::FluidRendererOld()
 {
 }
 
 
-FluidRenderer::~FluidRenderer()
+FluidRendererOld::~FluidRendererOld()
 {
 }
 
-void FluidRenderer::Init(shared_ptr<FluidSystem> system)
+void FluidRendererOld::Init(shared_ptr<FluidSystem> system)
 {
 	System = system;
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -32,7 +32,7 @@ void FluidRenderer::Init(shared_ptr<FluidSystem> system)
 	return;
 }
 
-void FluidRenderer::InitGeometry()
+void FluidRendererOld::InitGeometry()
 {
 	glGenVertexArrays(1, &meshVAO);
 	glBindVertexArray(meshVAO);
@@ -47,7 +47,7 @@ void FluidRenderer::InitGeometry()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_vertices), _vertices, GL_STATIC_DRAW);
 }
 
-void FluidRenderer::InitTransformFeedback()
+void FluidRendererOld::InitTransformFeedback()
 {
 	glGenVertexArrays(1, &transVAO);
 	glBindVertexArray(transVAO);
@@ -62,13 +62,13 @@ void FluidRenderer::InitTransformFeedback()
 
 }
 
-void FluidRenderer::InitShaders()
+void FluidRendererOld::InitShaders()
 {
 	InitBasicShader();
 	InitTransformShader();
 }
 
-void FluidRenderer::InitBasicShader()
+void FluidRendererOld::InitBasicShader()
 {
 	glBindVertexArray(meshVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
@@ -103,7 +103,7 @@ void FluidRenderer::InitBasicShader()
 	//glEnableVertexAttribArray(colAttrib);
 }
 
-void Flow::FluidRenderer::InitTransformShader()
+void Flow::FluidRendererOld::InitTransformShader()
 {
 	glBindVertexArray(transVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, transVBO);
@@ -130,7 +130,7 @@ void Flow::FluidRenderer::InitTransformShader()
 	glVertexAttribPointer(inputAttrib, 1, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
-void FluidRenderer::Draw()
+void FluidRendererOld::Draw()
 {
 	UpdateGeometry();
 	glBindVertexArray(meshVAO);
@@ -142,7 +142,7 @@ void FluidRenderer::Draw()
 	return;
 }
 
-void FluidRenderer::UpdateGeometry()
+void FluidRendererOld::UpdateGeometry()
 {
 	vertices = std::vector<float>(); //empty vector with enough reserved memory
 	vertices.reserve((CellsX) * (CellsY) * 2);
@@ -184,7 +184,7 @@ void FluidRenderer::UpdateGeometry()
 	}
 }
 
-void Flow::FluidRenderer::CalculateGridValues()
+void Flow::FluidRendererOld::CalculateGridValues()
 {
 	glUseProgram(transProgram);
 	//bind the transform buffer
@@ -205,7 +205,7 @@ void Flow::FluidRenderer::CalculateGridValues()
 	printf("%f %f %f %f %f\n", feedback[0], feedback[1], feedback[2], feedback[3], feedback[4]);
 }
 
-float FluidRenderer::EvaluateField(vector<int> &indices, float x, float y)
+float FluidRendererOld::EvaluateField(vector<int> &indices, float x, float y)
 {
 	if (indices.size() == 0)
 		return 0;
@@ -220,7 +220,7 @@ float FluidRenderer::EvaluateField(vector<int> &indices, float x, float y)
 	return value;
 }
 
-void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_y, int i, int j)
+void FluidRendererOld::AddVertices(int configuration, float screen_x, float screen_y, int i, int j)
 {
 	//the value of the field at the corners
 	auto fieldNE = cells[(i)* CellsY + j];
@@ -406,7 +406,7 @@ void FluidRenderer::AddVertices(int configuration, float screen_x, float screen_
 	}
 }
 
-Vector2f Flow::FluidRenderer::ScreenCoordsToSim(Vector2f screen)
+Vector2f Flow::FluidRendererOld::ScreenCoordsToSim(Vector2f screen)
 {
 	auto sim = screen + Vector2f(1, 1);
 	sim *= 0.5f;
@@ -415,19 +415,19 @@ Vector2f Flow::FluidRenderer::ScreenCoordsToSim(Vector2f screen)
 	return sim;
 }
 
-inline void FluidRenderer::AddVert(Vector2f pos)
+inline void FluidRendererOld::AddVert(Vector2f pos)
 {
 	vertices.push_back(pos.x);
 	vertices.push_back(pos.y);
 }
 
-inline void FluidRenderer::AddVert(float x, float y)
+inline void FluidRendererOld::AddVert(float x, float y)
 {
 	vertices.push_back(x);
 	vertices.push_back(y);
 }
 
-void FluidRenderer::End()
+void FluidRendererOld::End()
 {
 }
 

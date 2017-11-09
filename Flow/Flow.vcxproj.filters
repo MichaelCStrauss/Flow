@@ -1,97 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{3ec15d4f-db54-4328-aaf9-0db8aa5fde6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Base">
-      <UniqueIdentifier>{5d51e61b-20c8-4139-8ec9-521996e0f938}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Simulation">
-      <UniqueIdentifier>{1cbd805e-c86a-426e-9c65-ce9c8dc8f51e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="glad">
-      <UniqueIdentifier>{abe16ef8-649b-463b-9762-54f171199bdd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shaders">
-      <UniqueIdentifier>{fc4ec8ad-3ea0-486f-9b44-fb87726c7d8a}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FluidRenderer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Flow.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="dll.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="vmath.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="FluidGrid.h">
-      <Filter>Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="FluidSystem.h">
-      <Filter>Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\glad\include\glad\glad.h">
-      <Filter>glad</Filter>
-    </ClInclude>
-    <ClInclude Include="..\glad\include\KHR\khrplatform.h">
-      <Filter>glad</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Base</Filter>
-    </ClInclude>
+    <ClInclude Include="include\dll.h" />
+    <ClInclude Include="include\Flow.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\Utilities.h" />
+    <ClInclude Include="include\vmath.h" />
+    <ClInclude Include="include\Renderer\FluidRenderer.h" />
+    <ClInclude Include="include\Simulation\FluidGrid.h" />
+    <ClInclude Include="include\Simulation\FluidSystem.h" />
+    <ClInclude Include="include\Simulation\Particle.h" />
+    <ClInclude Include="include\Renderer\BasicRenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FluidRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="vmath.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="FluidGrid.cpp">
-      <Filter>Simulation</Filter>
-    </ClCompile>
-    <ClCompile Include="FluidSystem.cpp">
-      <Filter>Simulation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\glad\src\glad.c">
-      <Filter>glad</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilities.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
+    <ClCompile Include="src\Renderer\FluidRenderer.cpp" />
+    <ClCompile Include="src\Simulation\FluidGrid.cpp" />
+    <ClCompile Include="src\Simulation\FluidSystem.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\Utilities.cpp" />
+    <ClCompile Include="src\vmath.cpp" />
+    <ClCompile Include="..\..\glad\src\glad.c" />
+    <ClCompile Include="src\Renderer\BasicRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="basic_fragment.glsl">
-      <Filter>Renderer\Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="basic_vertex.glsl">
-      <Filter>Renderer\Shaders</Filter>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="metaballs.glsl">
-      <Filter>Renderer\Shaders</Filter>
-    </None>
+    <None Include="Shaders\basic_fragment.glsl" />
+    <None Include="Shaders\basic_vertex.glsl" />
+    <None Include="Shaders\metaballs.glsl" />
   </ItemGroup>
 </Project>
