@@ -89,4 +89,9 @@
       <Filter>Renderer\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="metaballs.glsl">
+      <Filter>Renderer\Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

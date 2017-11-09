@@ -19,7 +19,9 @@ void FluidRenderer::Init(shared_ptr<FluidSystem> system)
 	gladLoadGL();
 
 	InitGeometry();
+	InitTransformFeedback();
 	InitShaders();
+	CalculateGridValues();
 
 	CellsX = System->Width * Resolution;
 	CellsY = System->Height * Resolution;
@@ -32,11 +34,11 @@ void FluidRenderer::Init(shared_ptr<FluidSystem> system)
 
 void FluidRenderer::InitGeometry()
 {
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	glGenVertexArrays(1, &meshVAO);
+	glBindVertexArray(meshVAO);
 
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glGenBuffers(1, &meshVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
 	float _vertices[] = {
 	 0.0f,  0.5f,  0.5f,  0.5f,  0.5f, // Vertex 1 (X, Y)
 	 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, // Vertex 2 (X, Y)
@@ -45,8 +47,31 @@ void FluidRenderer::InitGeometry()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_vertices), _vertices, GL_STATIC_DRAW);
 }
 
+void FluidRenderer::InitTransformFeedback()
+{
+	glGenVertexArrays(1, &transVAO);
+	glBindVertexArray(transVAO);
+	glGenBuffers(1, &transVBO);
+	GLfloat data[] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+	glBindBuffer(GL_ARRAY_BUFFER, transVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &transTBO);
+	glBindBuffer(GL_ARRAY_BUFFER, transTBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(data), nullptr, GL_STATIC_READ); //set the data to be blank
+
+}
+
 void FluidRenderer::InitShaders()
 {
+	InitBasicShader();
+	InitTransformShader();
+}
+
+void FluidRenderer::InitBasicShader()
+{
+	glBindVertexArray(meshVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
 	auto vert_shader_src = Utilities::LoadShaderFromFile("basic_vertex.glsl");
 	auto frag_shader_src = Utilities::LoadShaderFromFile("basic_fragment.glsl");
 
@@ -78,9 +103,40 @@ void FluidRenderer::InitShaders()
 	//glEnableVertexAttribArray(colAttrib);
 }
 
+void Flow::FluidRenderer::InitTransformShader()
+{
+	glBindVertexArray(transVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, transVBO);
+	auto shaderSrc = Utilities::LoadShaderFromFile("metaballs.glsl");
+	auto c_str = shaderSrc.c_str();
+
+	auto shader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(shader, 1, &c_str, nullptr);
+	glCompileShader(shader);
+	Utilities::CheckShaderError(shader);
+
+	transProgram = glCreateProgram();
+	glAttachShader(transProgram, shader);
+
+	//now set the buffer settings
+	const GLchar* feedbackOutput[] = { "value" };
+	glTransformFeedbackVaryings(transProgram, 1, feedbackOutput, GL_INTERLEAVED_ATTRIBS);
+
+	glLinkProgram(transProgram);
+	glUseProgram(transProgram);
+
+	GLint inputAttrib = glGetAttribLocation(transProgram, "inValue");
+	glEnableVertexAttribArray(inputAttrib);
+	glVertexAttribPointer(inputAttrib, 1, GL_FLOAT, GL_FALSE, 0, 0);
+}
+
 void FluidRenderer::Draw()
 {
 	UpdateGeometry();
+	glBindVertexArray(meshVAO);
+	glUseProgram(basicProgram);
+	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
 	glDrawArrays(GL_TRIANGLES, 0, (int)(vertices.size() / 2));
 
 	return;
@@ -126,9 +182,27 @@ void FluidRenderer::UpdateGeometry()
 			AddVertices(configuration, screen_x, screen_y, i, j);
 		}
 	}
+}
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
+void Flow::FluidRenderer::CalculateGridValues()
+{
+	glUseProgram(transProgram);
+	//bind the transform buffer
+	glBindBuffer(GL_ARRAY_BUFFER, transTBO);
+	//read the data
+
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, transTBO);
+
+	glEnable(GL_RASTERIZER_DISCARD);
+	glBeginTransformFeedback(GL_POINTS);
+	glDrawArrays(GL_POINTS, 0, 5);
+	glEndTransformFeedback();
+	glDisable(GL_RASTERIZER_DISCARD);
+	glFlush();
+
+	GLfloat feedback[5];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
+	printf("%f %f %f %f %f\n", feedback[0], feedback[1], feedback[2], feedback[3], feedback[4]);
 }
 
 float FluidRenderer::EvaluateField(vector<int> &indices, float x, float y)

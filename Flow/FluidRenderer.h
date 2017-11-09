@@ -21,9 +21,15 @@ namespace Flow
 	private:
 
 		void InitShaders();
+		void InitBasicShader(); //the shader to render the mesh
+
+		void InitTransformFeedback();
+		void InitTransformShader(); //the shader to evaluate the field
+
 		void InitGeometry();
 
 		void UpdateGeometry();
+		void CalculateGridValues();
 
 		float EvaluateField(vector<int> &indices, float x, float y);
 
@@ -38,14 +44,14 @@ namespace Flow
 		vector<float> cells;
 		vector<float> vertices;
 
-		GLuint meshVBO, meshVAO, transVAO;
+		GLuint meshVBO, meshVAO, transVBO, transVAO, transTBO;
 		GLuint basicProgram, transProgram;
 
 		//parameters
-		int Resolution = 150;
+		int Resolution = 175;
 		int CellsX, CellsY;
-		float ParticleRadius = 0.01; //this in sim terms
-		float DensityThreshold = 600;
+		float ParticleRadius = 0.015; //this in sim terms
+		float DensityThreshold = 200;
 		float CellW, CellH;
 	};
 }
