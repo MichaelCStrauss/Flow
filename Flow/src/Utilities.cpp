@@ -1,12 +1,12 @@
 #include "Utilities.h"
 
-std::string Flow::Utilities::LoadShaderFromFile(char * filename)
+std::string Flow::Utilities::LoadShaderFromFile(std::string filename)
 {
 	std::ifstream file(filename);
 	// If we couldn't open the file we'll bail out
 	if ( !file.good() )
 	{
-		throw std::runtime_error("Failed to open file: " + std::string(filename));
+		throw std::runtime_error("Failed to open file: " + filename);
 	}
 
 	std::stringstream stream;
@@ -15,7 +15,7 @@ std::string Flow::Utilities::LoadShaderFromFile(char * filename)
 	return stream.str();
 }
 
-void Flow::Utilities::CheckShaderError(GLuint shader)
+int Flow::Utilities::CheckShaderError(GLuint shader)
 {
 	GLint status;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
@@ -24,8 +24,9 @@ void Flow::Utilities::CheckShaderError(GLuint shader)
 		char buffer[512];
 		glGetShaderInfoLog(shader, 512, NULL, buffer);
 		std::cout << buffer << std::endl;
-		exit(-1);
+		return 0;
 	}
+	return 1;
 }
 
 float Flow::Utilities::LERP(float x0, float x1, float y0, float y1, float x)

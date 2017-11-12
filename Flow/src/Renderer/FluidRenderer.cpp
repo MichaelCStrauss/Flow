@@ -10,3 +10,7 @@ Flow::FluidRenderer::FluidRenderer(shared_ptr<FluidSystem> system) : system_(sys
 Flow::FluidRenderer::~FluidRenderer()
 {
 }
+
+void Flow::FluidRenderer::Draw()
+{
+}

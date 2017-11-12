@@ -41,8 +41,7 @@ int main()
 	system->Init();
 	auto particles = system->Particles;
 
-	auto renderer = Flow::FluidRendererOld();
-	renderer.Init(system);
+	auto renderer = Flow::BasicRenderer(system);
 
 	sf::Clock deltaClock; 
 	int frames = 0;
@@ -77,7 +76,6 @@ int main()
 		glfwSwapBuffers(window);
 	}
 
-	renderer.End();
 	glfwTerminate();
 
 	return 0;

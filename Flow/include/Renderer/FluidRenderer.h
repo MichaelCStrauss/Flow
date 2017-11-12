@@ -9,8 +9,8 @@ namespace Flow
 	{
 	public:
 		//Initialise any resources needed by the renderer
-		FluidRenderer(std::shared_ptr<FluidSystem> system);
-		~FluidRenderer();
+		FLOW_API FluidRenderer(std::shared_ptr<FluidSystem> system);
+		FLOW_API ~FluidRenderer();
 
 		FLOW_API void Draw();
 
