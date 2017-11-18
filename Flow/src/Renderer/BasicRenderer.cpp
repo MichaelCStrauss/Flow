@@ -1,9 +1,10 @@
-#include "Renderer/BasicRenderer.h"
+#include <Renderer/BasicRenderer.h>
 
 using namespace std;
 
-Flow::BasicRenderer::BasicRenderer(shared_ptr<FluidSystem> system) : FluidRenderer(system), FluidRenderer::system_(system)
+Flow::BasicRenderer::BasicRenderer(shared_ptr<FluidSystem> system) : FluidRenderer(system)
 {
+	system_ = system;
 	InitGL();
 }
 

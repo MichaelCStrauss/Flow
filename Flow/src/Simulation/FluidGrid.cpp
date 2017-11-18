@@ -1,4 +1,4 @@
-#include "Simulation/FluidGrid.h"
+#include <Simulation/FluidGrid.h>
 #include <math.h>
 
 using namespace Flow;
@@ -16,7 +16,7 @@ FluidGrid::FluidGrid(shared_ptr<ParticleVector> particles, int density, float si
 	Height = sim_h * Density;
 	Frame = 0;
 
-	Grid = vector<vector<int>>();
+	Grid = vector< vector<int> >();
 	Grid.reserve(Width * Height);
 	Cache = vector<CellCache>();
 	Cache.reserve(Width * Height);

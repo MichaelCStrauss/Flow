@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderer\FluidRenderer.h"
-#include "Utilities.h"
+#include <Renderer/FluidRenderer.h>
+#include <Utilities.h>
 
 namespace Flow
 {

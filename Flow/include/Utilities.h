@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <glad\glad.h>
+#include <glad/glad.h>
 #include <string>
 #include <sstream>
 #include <fstream>

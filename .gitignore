@@ -297,3 +297,5 @@ __pycache__/
 
 #vs code
 .vscode/
+
+build/

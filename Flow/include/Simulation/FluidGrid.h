@@ -37,7 +37,7 @@ namespace Flow
 		//cache invalidation time in frames
 		int CacheInvalidationTime = 1;
 
-		vector<vector<int>> Grid;
+		vector< vector<int> > Grid;
 		vector<CellCache> Cache;
 	};
 }
