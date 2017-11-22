@@ -299,3 +299,6 @@ __pycache__/
 .vscode/
 
 build/
+Fluid/compile_commands.json
+compile_commands.json
+*.swp
