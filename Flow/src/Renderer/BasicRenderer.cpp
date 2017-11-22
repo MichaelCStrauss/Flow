@@ -45,6 +45,7 @@ void Flow::BasicRenderer::InitGL()
 	shaderProgram_ = glCreateProgram();
 	glAttachShader(shaderProgram_, vertexShader_);
 	glAttachShader(shaderProgram_, fragmentShader_);
+	glBindFragDataLocation(shaderProgram_, 0, "outColor");
 	glLinkProgram(shaderProgram_);
 
 	posAttrib_ = glGetAttribLocation(shaderProgram_, "position");
@@ -62,20 +63,20 @@ void Flow::BasicRenderer::PrepareGeometry()
 {
 	vertexData.clear();
 
-	for (auto p : *(system_)->Particles)
+	for (auto p : *system_->getParticles())
 	{
-		vertexData.push_back(0.f);
-		vertexData.push_back(0.f);
+		vertexData.push_back(p.Position.x * 2.f / system_->Width - 1.f);
+		vertexData.push_back(p.Position.y * 2.f / system_->Height - 1.f);
 		vertexData.push_back(0.f);
 		vertexData.push_back(0.f);
 		vertexData.push_back(1.0f);
 	}
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_STREAM_DRAW);
 }
 
 void Flow::BasicRenderer::Draw()
 {
 	glBindVertexArray(vao_);
 	PrepareGeometry();
-	glDrawArrays(GL_POINT, 0, system_->getParticles()->size());
+	glDrawArrays(GL_POINTS, 0, system_->getParticles()->size());
 }
