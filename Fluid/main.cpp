@@ -54,6 +54,7 @@ int main()
 	system->Init();
 
 	auto renderer = Flow::BasicRenderer(system);
+	renderer.setColorFunction(Flow::BasicRenderer::DensityGradient);
 
 	float deltaTime = 0, t = 0;
 	int frames = 0;

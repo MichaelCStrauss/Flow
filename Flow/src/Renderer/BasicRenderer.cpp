@@ -5,6 +5,7 @@ using namespace std;
 Flow::BasicRenderer::BasicRenderer(shared_ptr<FluidSystem> system) : FluidRenderer(system)
 {
 	system_ = system;
+	colorFunction_ = BasicRenderer::PlainBlue;
 	InitGL();
 }
 
@@ -67,9 +68,10 @@ void Flow::BasicRenderer::PrepareGeometry()
 	{
 		vertexData.push_back(p.Position.x * 2.f / system_->Width - 1.f);
 		vertexData.push_back(p.Position.y * 2.f / system_->Height - 1.f);
-		vertexData.push_back(0.f);
-		vertexData.push_back(0.f);
-		vertexData.push_back(1.0f);
+		auto color = colorFunction_(p);
+		vertexData.push_back(color.r);
+		vertexData.push_back(color.g);
+		vertexData.push_back(color.b);
 	}
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_STREAM_DRAW);
 }
@@ -79,4 +81,20 @@ void Flow::BasicRenderer::Draw()
 	glBindVertexArray(vao_);
 	PrepareGeometry();
 	glDrawArrays(GL_POINTS, 0, system_->getParticles()->size());
+}
+
+void Flow::BasicRenderer::setColorFunction(std::function<Color3f(Particle)> func)
+{
+	colorFunction_ = func;
+}
+
+Flow::Color3f Flow::BasicRenderer::PlainBlue(Particle p)
+{
+	return Flow::Color3f(0.f, 0.f, 1.f);
+}
+
+Flow::Color3f Flow::BasicRenderer::DensityGradient(Particle p)
+{
+	float rg = min(0.6f, p.Density / 4000.f);
+	return Flow::Color3f(rg, rg, 1.f);
 }
