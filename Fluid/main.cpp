@@ -1,5 +1,5 @@
 #ifdef _WIN32
-    #define APIENTRY __stdcall
+#define APIENTRY __stdcall
 #endif
 
 #include <glad/glad.h>
@@ -9,13 +9,12 @@
 
 void error_callback(int error, const char* description)
 {
-    std::cout << "Error: %s\n" << description;
+	std::cout << "Error: %s\n" << description;
 }
 
 int main()
 {
 	std::cout << "Beginning Flow..." << std::endl;
-	const int Scale = 800;
 	const int WindowWidth = 1000, WindowHeight = 666;
 
 	glfwSetErrorCallback(error_callback);
@@ -25,7 +24,7 @@ int main()
 		std::cout << "Couldn't init GLFW" << std::endl;
 		return -1;
 	}
-	
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
