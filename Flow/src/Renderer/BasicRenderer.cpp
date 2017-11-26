@@ -12,6 +12,11 @@ Flow::BasicRenderer::BasicRenderer(shared_ptr<FluidSystem> system) : FluidRender
 
 Flow::BasicRenderer::~BasicRenderer()
 {
+	glDeleteProgram(shaderProgram_);
+	glDeleteShader(vertexShader_);
+	glDeleteShader(fragmentShader_);
+	glDeleteBuffers(1, &vbo_);
+	glDeleteVertexArrays(1, &vao_);
 }
 
 void Flow::BasicRenderer::InitGL()
