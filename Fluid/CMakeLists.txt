@@ -9,8 +9,11 @@ add_executable(fluid main.cpp)
 target_link_libraries(fluid ${PROJECT_LINK_LIBS} )
 target_include_directories(fluid PUBLIC include)
 
-add_custom_command(
-    TARGET fluid POST_BUILD
+add_custom_target(build-time-copy-files ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/marching_squares/
     COMMAND ${CMAKE_COMMAND} -E copy
             ${CMAKE_SOURCE_DIR}/Flow/Shaders/*.glsl
-            ${CMAKE_CURRENT_BINARY_DIR}/)
+            ${CMAKE_CURRENT_BINARY_DIR}/
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/Flow/Shaders/marching_squares/*.glsl
+            ${CMAKE_CURRENT_BINARY_DIR}/marching_squares/)
