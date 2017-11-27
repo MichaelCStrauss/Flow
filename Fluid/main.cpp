@@ -52,8 +52,7 @@ int main()
 	auto system = std::make_shared<Flow::FluidSystem>();
 	system->Init();
 
-	auto renderer = Flow::BasicRenderer(system);
-	renderer.setColorFunction(Flow::BasicRenderer::DensityGradient);
+	auto renderer = Flow::MarchingSquaresRenderer(system);
 
 	float deltaTime = 0, t = 0;
 	int frames = 0;

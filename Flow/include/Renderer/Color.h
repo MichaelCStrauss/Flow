@@ -1,3 +1,4 @@
+#pragma once
 namespace Flow 
 {
 	struct Color3f
