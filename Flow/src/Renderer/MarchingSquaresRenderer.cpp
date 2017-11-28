@@ -80,12 +80,12 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 	renderData_.clear();
 	renderData_.reserve(6 * Resolution * Resolution);
 
-	for (int i = 0; i < system_->Width * Resolution; i++)
+	for (float i = 0; i < system_->Width * (float)Resolution; i++)
 	{
-		for (int j = 0; j < system_->Height * Resolution; j++)
+		for (float j = 0; j < system_->Height * (float)Resolution; j++)
 		{
-			float sim_x = (float)i / Resolution;
-			float sim_y = (float)j / Resolution;
+			float sim_x = i / (float)Resolution;
+			float sim_y = j / (float)Resolution;
 
 			auto indices = system_->GetNearbyParticles(sim_x, sim_y);
 			float value = 0;
@@ -112,7 +112,6 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 					fieldValues_[(i - 1) * system_->Height * Resolution + j - 1]);
 		}
 	}
-	std::cout << renderData_.size() << std::endl;
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * renderData_.size(), &renderData_[0], GL_STREAM_DRAW);
 }
 
@@ -120,6 +119,6 @@ void Flow::MarchingSquaresRenderer::Draw()
 {
 	glBindVertexArray(vao_);
 	EvaluateGrid();
-	glDrawArrays(GL_POINTS, 0, system_->getParticles()->size());
+	glDrawArrays(GL_POINTS, 0, renderData_.size());
 }
 

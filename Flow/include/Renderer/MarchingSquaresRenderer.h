@@ -34,7 +34,7 @@ namespace Flow
 		std::vector<float> fieldValues_, renderData_;
 
 		//Parameters
-		const unsigned int Resolution = 10;
+		const unsigned int Resolution = 50;
 		const float ParticleRadius = 0.015; //this in sim terms
 	};
 }
