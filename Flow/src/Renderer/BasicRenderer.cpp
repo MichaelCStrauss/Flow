@@ -21,8 +21,8 @@ Flow::BasicRenderer::~BasicRenderer()
 
 void Flow::BasicRenderer::InitGL()
 {
-	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-	gladLoadGL();
+	/* gladLoadGLLoader((GLADloadproc) glfwGetProcAddress); */
+	/* gladLoadGL(); */
 
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -84,6 +84,8 @@ void Flow::BasicRenderer::PrepareGeometry()
 void Flow::BasicRenderer::Draw()
 {
 	glBindVertexArray(vao_);
+	glUseProgram(shaderProgram_);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 	PrepareGeometry();
 	glDrawArrays(GL_POINTS, 0, system_->getParticles()->size());
 }

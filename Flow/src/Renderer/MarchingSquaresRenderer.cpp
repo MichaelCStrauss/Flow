@@ -6,6 +6,8 @@ Flow::MarchingSquaresRenderer::MarchingSquaresRenderer(shared_ptr<FluidSystem> s
 {
 	system_ = system;
 	InitGL();
+	fieldValues_ = std::vector<float>(Resolution * Resolution * system_->Width * system_->Height);
+	renderData_ = std::vector<float>(6 * Resolution * Resolution * system_->Width * system_->Height);
 }
 
 
@@ -75,15 +77,11 @@ void Flow::MarchingSquaresRenderer::InitGL()
 
 void Flow::MarchingSquaresRenderer::EvaluateGrid()
 {
-	fieldValues_.clear();
-	fieldValues_.reserve(Resolution * Resolution);
-	renderData_.clear();
-	renderData_.reserve(6 * Resolution * Resolution);
-
 	for (float i = 0; i < system_->Width * (float)Resolution; i++)
 	{
 		for (float j = 0; j < system_->Height * (float)Resolution; j++)
 		{
+			auto baseIndex = (i * system_->Height * (float)Resolution + j);
 			float sim_x = i / (float)Resolution;
 			float sim_y = j / (float)Resolution;
 
@@ -94,22 +92,16 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 				auto particle = (*system_->getParticles())[index];
 				value += (ParticleRadius * ParticleRadius) / (pow(sim_x - particle.Position.x, 2) + pow(sim_y - particle.Position.y, 2));
 			}
-			fieldValues_.push_back(value);
+			fieldValues_[baseIndex] = value;
 
-			if (i == 0 || j == 0) continue;
-
-			float screen_x = 2.f * sim_x / system_->Width - 1.f;
-			float screen_y = 2.f * sim_y / system_->Height - 1.f;
-			renderData_.push_back(screen_x);
-			renderData_.push_back(screen_y);
-			renderData_.push_back(
-					fieldValues_[i * system_->Height * Resolution + j]);
-			renderData_.push_back(
-					fieldValues_[i * system_->Height * Resolution + j - 1]);
-			renderData_.push_back(
-					fieldValues_[(i - 1) * system_->Height * Resolution + j]);
-			renderData_.push_back(
-					fieldValues_[(i - 1) * system_->Height * Resolution + j - 1]);
+			float screen_x = 2.f * sim_x / system_->Width - 1.f + (0.5f / Resolution);
+			float screen_y = 2.f * sim_y / system_->Width - 1.f + (0.5f / Resolution);
+			renderData_[6 * baseIndex] = screen_x;
+			renderData_[6 * baseIndex + 1] = screen_y;
+			renderData_[6 * baseIndex + 2] = fieldValues_[baseIndex];
+			renderData_[6 * baseIndex + 3] = fieldValues_[i * system_->Height * (float)Resolution + j - 1];
+			renderData_[6 * baseIndex + 4] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j];
+			renderData_[6 * baseIndex + 5] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j - 1];
 		}
 	}
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * renderData_.size(), &renderData_[0], GL_STREAM_DRAW);
@@ -118,7 +110,9 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 void Flow::MarchingSquaresRenderer::Draw()
 {
 	glBindVertexArray(vao_);
+	glUseProgram(shaderProgram_);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 	EvaluateGrid();
-	glDrawArrays(GL_POINTS, 0, renderData_.size());
+	glDrawArrays(GL_POINTS, 0, renderData_.size() / 6);
 }
 
