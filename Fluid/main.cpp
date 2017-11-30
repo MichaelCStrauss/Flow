@@ -7,15 +7,23 @@
 #include <Flow.h>
 #include <chrono>
 
+bool useBasic = false;
+
 void error_callback(int error, const char* description)
 {
 	std::cout << "Error: %s\n" << description;
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		useBasic = !useBasic;
+}
+
 int main()
 {
 	std::cout << "Beginning Flow..." << std::endl;
-	const int WindowWidth = 1000, WindowHeight = 666;
+	const int WindowWidth = 600, WindowHeight = 600;
 
 	glfwSetErrorCallback(error_callback);
 
@@ -52,7 +60,11 @@ int main()
 	auto system = std::make_shared<Flow::FluidSystem>();
 	system->Init();
 
-	auto renderer = Flow::MarchingSquaresRenderer(system);
+	auto bRenderer = Flow::BasicRenderer(system);
+	auto msRenderer = Flow::MarchingSquaresRenderer(system);
+	bRenderer.setColorFunction(Flow::BasicRenderer::DensityGradient);
+
+	glfwSetKeyCallback(window, key_callback);
 
 	float deltaTime = 0, t = 0;
 	int frames = 0;
@@ -67,7 +79,10 @@ int main()
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		renderer.Draw();
+		if (useBasic)
+			bRenderer.Draw();
+		else
+			msRenderer.Draw();
 
 		glfwSwapBuffers(window);
 
