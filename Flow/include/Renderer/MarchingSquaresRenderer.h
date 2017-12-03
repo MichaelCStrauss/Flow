@@ -32,7 +32,9 @@ namespace Flow
 		void EvaluateGrid();
 
 		//OpenGL
-		GLuint vbo_, vao_, vertexShader_, geometryShader_, fragmentShader_, shaderProgram_, posAttrib_, fieldAttrib_, colorAttrib_;
+		GLuint vbo_, vao_, vertexShader_, geometryShader_, fragmentShader_,
+			   shaderProgram_, posAttrib_, fieldAttrib_, colorAttrib_,
+			   cellW_uniform_, cellH_uniform_;
 
 		//Data for the simulation
 		std::vector<float> fieldValues_, renderData_;

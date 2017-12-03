@@ -72,6 +72,10 @@ void Flow::MarchingSquaresRenderer::InitGL()
 	glEnableVertexAttribArray(fieldAttrib_);
 	glVertexAttribPointer(fieldAttrib_, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2*sizeof(float)));
 
+	cellW_uniform_ = glGetUniformLocation(shaderProgram_, "cellW");
+
+	cellH_uniform_ = glGetUniformLocation(shaderProgram_, "cellH");
+
 	glUseProgram(shaderProgram_);
 }
 
@@ -94,12 +98,18 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 			}
 			fieldValues_[baseIndex] = value;
 
+			if (i == 0 || j == 0) {
+				renderData_[6 * baseIndex] = -2;
+				renderData_[6 * baseIndex + 1] = -2;
+				continue;
+			}
+
 			float screen_x = 2.f * sim_x / system_->Width - 1.f + (0.5f / Resolution);
-			float screen_y = 2.f * sim_y / system_->Width - 1.f + (0.5f / Resolution);
+			float screen_y = 2.f * sim_y / system_->Height - 1.f + (0.5f / Resolution);
 			renderData_[6 * baseIndex] = screen_x;
 			renderData_[6 * baseIndex + 1] = screen_y;
 			renderData_[6 * baseIndex + 2] = fieldValues_[baseIndex];
-			renderData_[6 * baseIndex + 3] = fieldValues_[i * system_->Height * (float)Resolution + j - 1];
+			renderData_[6 * baseIndex + 3] = fieldValues_[baseIndex - 1];
 			renderData_[6 * baseIndex + 4] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j];
 			renderData_[6 * baseIndex + 5] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j - 1];
 		}
@@ -111,6 +121,8 @@ void Flow::MarchingSquaresRenderer::Draw()
 {
 	glBindVertexArray(vao_);
 	glUseProgram(shaderProgram_);
+	glUniform1f(cellW_uniform_, 2.f / (system_->Width * (float)Resolution));
+	glUniform1f(cellH_uniform_, 2.f / (system_->Height * (float)Resolution));
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 	EvaluateGrid();
 	glDrawArrays(GL_POINTS, 0, renderData_.size() / 6);

@@ -6,7 +6,7 @@ using namespace std;
 FluidSystem::FluidSystem()
 {
 	Particles = make_shared< vector<Particle> >();
-	Width = 1;
+	Width = 2;
 	Height = 1;
 	Grid = FluidGrid(Particles, 1/h, Width, Height);
 	h2 = h * h;
@@ -35,7 +35,7 @@ void FluidSystem::InitParticles()
 		{
 			auto p = Particle();
 			p.Mass = ParticleMass;
-			p.Position = Vector2f(0.01 + (0.5 / Num) * (x + 0.5 * (y % 2)), Height - (0.7 / Num) * y);
+			p.Position = Vector2f(0.01 + (0.7 / Num) * (x + 0.5 * (y % 2)), Height - 0.3 - (0.7 / Num) * y);
 			p.ID = x * Num + y;
 
 			Particles->push_back(p);
