@@ -5,19 +5,39 @@ using namespace std;
 Flow::MarchingSquaresRenderer::MarchingSquaresRenderer(shared_ptr<FluidSystem> system) : FluidRenderer(system)
 {
 	system_ = system;
+	cellsX_ = (float)Resolution * system_->Width;
+	cellsY_ = (float)Resolution * system_->Height;
+	cellW_  = 2.f / (float)cellsX_;
+	cellH_  = 2.f / (float)cellsY_;
+
 	InitGL();
-	fieldValues_ = std::vector<float>(Resolution * Resolution * system_->Width * system_->Height);
-	renderData_ = std::vector<float>(6 * Resolution * Resolution * system_->Width * system_->Height);
+
+	fieldValues_ = std::vector<float>(cellsX_ * cellsY_);
+	renderData_ = std::vector<float>(6 * cellsX_ * cellsY_);
+
+	running_.store(true);
+	spawnThreads();
 }
 
 
 Flow::MarchingSquaresRenderer::~MarchingSquaresRenderer()
 {
+	//Sign to running threads that the program is terminating
+	running_.store(false);
+	threadStatus_.store(beginFlag_);
+	condition_.notify_all();
+	for (auto &thread : threads_)
+		thread.join();
+
+
 	glDeleteProgram(shaderProgram_);
 	glDeleteShader(vertexShader_);
 	glDeleteShader(fragmentShader_);
 	glDeleteBuffers(1, &vbo_);
 	glDeleteVertexArrays(1, &vao_);
+
+	std::cout << "Average Field Evalutation Time: " << fieldElapse_ / (double)frames_ << std::endl;
+	std::cout << "Average Points Preparation Time: " << pointsElapsed_ / (double)frames_ << std::endl;
 }
 
 void Flow::MarchingSquaresRenderer::InitGL()
@@ -79,13 +99,48 @@ void Flow::MarchingSquaresRenderer::InitGL()
 	glUseProgram(shaderProgram_);
 }
 
-void Flow::MarchingSquaresRenderer::EvaluateGrid()
+void Flow::MarchingSquaresRenderer::spawnThreads()
 {
-	for (float i = 0; i < system_->Width * (float)Resolution; i++)
+	int mask = 1;
+	for (int i = 0; i < num_threads_; i++)
 	{
-		for (float j = 0; j < system_->Height * (float)Resolution; j++)
+		threads_.push_back(std::thread(&MarchingSquaresRenderer::workerThread, this, i, mask));
+		beginFlag_ += mask;
+		mask = mask << 1;
+	}
+}
+
+void Flow::MarchingSquaresRenderer::workerThread(int num, int mask)
+{
+	std::cout << "Thread " << std::this_thread::get_id() << " started. Mask: " << mask << std::endl;
+
+	int beginning = num * (cellsX_ / num_threads_);
+	int end = (num + 1) * (cellsX_ / num_threads_);
+	std:: cout << "b: " << beginning << " e: " << end << std::endl;
+
+	while (running_.load())
+	{
+		std::unique_lock<std::mutex> lock(statusMutex_);
+		condition_.wait(lock, [&status = this->threadStatus_, mask] {
+					return (status.load() & mask) != 0;
+				});
+
+		lock.unlock();
+
+		this->evaluateFieldValues(beginning, end);
+
+		threadStatus_.store(threadStatus_ & (~mask));
+		condition_.notify_all();
+	}
+}
+
+void Flow::MarchingSquaresRenderer::evaluateFieldValues(int beginning, int end)
+{
+	for (float i = beginning; i < end; i++)
+	{
+		for (float j = 0; j < cellsY_; j++)
 		{
-			auto baseIndex = (i * system_->Height * (float)Resolution + j);
+			auto baseIndex = (i * cellsY_ + j);
 			float sim_x = i / (float)Resolution;
 			float sim_y = j / (float)Resolution;
 
@@ -97,21 +152,30 @@ void Flow::MarchingSquaresRenderer::EvaluateGrid()
 				value += (ParticleRadius * ParticleRadius) / (pow(sim_x - particle.Position.x, 2) + pow(sim_y - particle.Position.y, 2));
 			}
 			fieldValues_[baseIndex] = value;
+		}
+	}
+}
 
+void Flow::MarchingSquaresRenderer::preparePoints(int beginning, int end)
+{
+	for (float i = beginning; i < end; i++)
+	{
+		for (float j = 0; j < cellsY_; j++)
+		{
+			auto baseIndex = (i * cellsY_ + j);
 			if (i == 0 || j == 0) {
 				renderData_[6 * baseIndex] = -2;
 				renderData_[6 * baseIndex + 1] = -2;
 				continue;
 			}
-
-			float screen_x = 2.f * sim_x / system_->Width - 1.f + (0.5f / Resolution);
-			float screen_y = 2.f * sim_y / system_->Height - 1.f + (0.5f / Resolution);
+			float screen_x = i * cellW_ - 1.f + (0.5f / Resolution);
+			float screen_y = j * cellH_ - 1.f + (0.5f / Resolution);
 			renderData_[6 * baseIndex] = screen_x;
 			renderData_[6 * baseIndex + 1] = screen_y;
 			renderData_[6 * baseIndex + 2] = fieldValues_[baseIndex];
 			renderData_[6 * baseIndex + 3] = fieldValues_[baseIndex - 1];
-			renderData_[6 * baseIndex + 4] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j];
-			renderData_[6 * baseIndex + 5] = fieldValues_[(i - 1) * system_->Height * (float)Resolution + j - 1];
+			renderData_[6 * baseIndex + 4] = fieldValues_[(i - 1) * cellsY_ + j];
+			renderData_[6 * baseIndex + 5] = fieldValues_[(i - 1) * cellsY_ + j - 1];
 		}
 	}
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * renderData_.size(), &renderData_[0], GL_STREAM_DRAW);
@@ -121,10 +185,26 @@ void Flow::MarchingSquaresRenderer::Draw()
 {
 	glBindVertexArray(vao_);
 	glUseProgram(shaderProgram_);
-	glUniform1f(cellW_uniform_, 2.f / (system_->Width * (float)Resolution));
-	glUniform1f(cellH_uniform_, 2.f / (system_->Height * (float)Resolution));
+	glUniform1f(cellW_uniform_, cellW_);
+	glUniform1f(cellH_uniform_, cellH_);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-	EvaluateGrid();
+
+	auto start = std::chrono::high_resolution_clock::now();
+
+	std::unique_lock<std::mutex> lock(statusMutex_);
+	threadStatus_.store(beginFlag_);
+	condition_.notify_all();
+
+	condition_.wait(lock, [&status = this->threadStatus_] { return status.load() == 0; } );
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> s = end - start;
+	fieldElapse_ += s.count();
+	preparePoints(0, cellsX_);
+	end = std::chrono::high_resolution_clock::now();
+	s = end - start;
+	pointsElapsed_ += s.count();
+	frames_++;
+
 	glDrawArrays(GL_POINTS, 0, renderData_.size() / 6);
 }
-
