@@ -200,6 +200,7 @@ void Flow::MarchingSquaresRenderer::Draw()
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> s = end - start;
 	fieldElapse_ += s.count();
+	start = std::chrono::high_resolution_clock::now();
 	preparePoints(0, cellsX_);
 	end = std::chrono::high_resolution_clock::now();
 	s = end - start;

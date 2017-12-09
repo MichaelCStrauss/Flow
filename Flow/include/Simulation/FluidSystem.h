@@ -43,7 +43,10 @@ namespace Flow
 
 		FluidGrid Grid;
 
-		int Num = 30;
+		int Num = 50;
+
+		//timing information
+		double gridTime_, densityTime_, forcesTime_, remainderTime_;
 
 
 		//Fluid Constants

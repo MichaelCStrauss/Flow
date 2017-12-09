@@ -18,7 +18,7 @@ namespace Flow
 	private:
 
 		//Parameters
-		const unsigned int Resolution = 50;
+		const unsigned int Resolution = 100;
 		const float ParticleRadius = 0.015; //this in sim terms
 
 		const std::string vertexShaderFile_ = "marching_squares/vertex.glsl";

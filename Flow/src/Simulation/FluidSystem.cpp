@@ -18,6 +18,10 @@ FluidSystem::FluidSystem()
 
 FluidSystem::~FluidSystem()
 {
+	std::cout << "Average Grid Preparation Time: " << gridTime_ / (double)Frame << std::endl;
+	std::cout << "Average Density Evalutation Time: " << densityTime_ / (double)Frame << std::endl;
+	std::cout << "Average Forces Evaluation Time: " << forcesTime_ / (double)Frame << std::endl;
+	std::cout << "Average Remaining Time: " << remainderTime_ / (double)Frame << std::endl;
 }
 
 void FluidSystem::Init()
@@ -69,11 +73,25 @@ vector<int> Flow::FluidSystem::GetNearbyParticles(float x, float y)
 
 void FluidSystem::Update(float deltaTime)
 {
+	auto start = std::chrono::high_resolution_clock::now();
 	Grid.Update();
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> s = end - start;
+	gridTime_ += s.count();
 
+	start = std::chrono::high_resolution_clock::now();
 	CalculateDensity();
-	CalculateForces();
+	end = std::chrono::high_resolution_clock::now();
+	s = end - start;
+	densityTime_ += s.count();
 
+	start = std::chrono::high_resolution_clock::now();
+	CalculateForces();
+	end = std::chrono::high_resolution_clock::now();
+	s = end - start;
+	forcesTime_ += s.count();
+
+	start = std::chrono::high_resolution_clock::now();
 	//integrate
 	for (auto &p : *Particles)
 	{
@@ -83,6 +101,9 @@ void FluidSystem::Update(float deltaTime)
 
 	ResolveCollisions();
 
+	end = std::chrono::high_resolution_clock::now();
+	s = end - start;
+	remainderTime_ += s.count();
 	Frame++;
 }
 
