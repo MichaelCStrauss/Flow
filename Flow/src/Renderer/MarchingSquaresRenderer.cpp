@@ -5,6 +5,7 @@ using namespace std;
 Flow::MarchingSquaresRenderer::MarchingSquaresRenderer(shared_ptr<FluidSystem> system) : FluidRenderer(system)
 {
 	system_ = system;
+	grid_ = CopyBasedGrid(system_, 1 / system_->h);
 	cellsX_ = (float)Resolution * system_->Width;
 	cellsY_ = (float)Resolution * system_->Height;
 	cellW_  = 2.f / (float)cellsX_;
@@ -36,7 +37,8 @@ Flow::MarchingSquaresRenderer::~MarchingSquaresRenderer()
 	glDeleteBuffers(1, &vbo_);
 	glDeleteVertexArrays(1, &vao_);
 
-	std::cout << "Average Field Evalutation Time: " << fieldElapse_ / (double)frames_ << std::endl;
+	std::cout << "Average Renderer Grid Evaluation Time: " << gridElapsed_ / (double)frames_ << std::endl;
+	std::cout << "Average Field Evaluation Time: " << fieldElapse_ / (double)frames_ << std::endl;
 	std::cout << "Average Points Preparation Time: " << pointsElapsed_ / (double)frames_ << std::endl;
 }
 
@@ -144,12 +146,11 @@ void Flow::MarchingSquaresRenderer::evaluateFieldValues(int beginning, int end)
 			float sim_x = i / (float)Resolution;
 			float sim_y = j / (float)Resolution;
 
-			auto indices = system_->GetNearbyParticles(sim_x, sim_y);
+			auto positions = grid_.getPositions(sim_x, sim_y);
 			float value = 0;
-			for (auto index : indices)
+			for (auto pos : positions)
 			{
-				auto particle = (*system_->getParticles())[index];
-				value += (ParticleRadius * ParticleRadius) / (pow(sim_x - particle.Position.x, 2) + pow(sim_y - particle.Position.y, 2));
+				value += (ParticleRadius * ParticleRadius) / ((sim_x - pos.x) * (sim_x - pos.x) + (sim_y - pos.y) * (sim_y - pos.y));
 			}
 			fieldValues_[baseIndex] = value;
 		}
@@ -191,16 +192,23 @@ void Flow::MarchingSquaresRenderer::Draw()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
+	grid_.Update();
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> s = end - start;
+	gridElapsed_ += s.count();
+	start = std::chrono::high_resolution_clock::now();
+
 	std::unique_lock<std::mutex> lock(statusMutex_);
 	threadStatus_.store(beginFlag_);
 	condition_.notify_all();
 
 	condition_.wait(lock, [&status = this->threadStatus_] { return status.load() == 0; } );
 
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> s = end - start;
+	end = std::chrono::high_resolution_clock::now();
+	s = end - start;
 	fieldElapse_ += s.count();
 	start = std::chrono::high_resolution_clock::now();
+
 	preparePoints(0, cellsX_);
 	end = std::chrono::high_resolution_clock::now();
 	s = end - start;

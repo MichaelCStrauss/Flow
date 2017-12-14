@@ -32,6 +32,8 @@ namespace Flow
 		float Width, Height;
 		int Frame = 0;
 
+		float h = 0.035;
+
 	private:
 		FLOW_API void CalculateDensity();
 		FLOW_API void CalculateForces();
@@ -56,7 +58,6 @@ namespace Flow
 		float RestDensity = 1000;
 		float k = 2.8;
 		float mu = 4;
-		float h = 0.035;
 		float h2;
 
 		float BoundaryDamping = 0.2;

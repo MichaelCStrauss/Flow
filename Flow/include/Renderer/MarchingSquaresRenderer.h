@@ -4,6 +4,7 @@
 #include <Renderer/FluidRenderer.h>
 #include <Utilities.h>
 #include <Renderer/Color.h>
+#include <Simulation/CopyBasedGrid.h>
 
 namespace Flow
 {
@@ -18,8 +19,8 @@ namespace Flow
 	private:
 
 		//Parameters
-		const unsigned int Resolution = 100;
-		const float ParticleRadius = 0.015; //this in sim terms
+		const unsigned int Resolution = 200;
+		const float ParticleRadius = 0.010; //this in sim terms
 
 		const std::string vertexShaderFile_ = "marching_squares/vertex.glsl";
 		const std::string geometryShaderFile_ = "marching_squares/geometry.glsl";
@@ -42,6 +43,10 @@ namespace Flow
 		GLuint vbo_, vao_, vertexShader_, geometryShader_, fragmentShader_,
 			   shaderProgram_, posAttrib_, fieldAttrib_, colorAttrib_,
 			   cellW_uniform_, cellH_uniform_;
+		
+		//simulation
+		CopyBasedGrid grid_;
+		
 
 		//threads
 		int num_threads_ = 4;
@@ -55,7 +60,7 @@ namespace Flow
 		void workerThread(int num, int mask);
 
 		//timing information
-		double fieldElapse_, pointsElapsed_;
+		double fieldElapse_, pointsElapsed_, gridElapsed_;
 		int frames_;
 
 		//Data for the simulation
