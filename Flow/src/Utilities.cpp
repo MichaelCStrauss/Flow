@@ -1,5 +1,18 @@
 #include "Utilities.h"
 
+GLuint Flow::Utilities::CompileShader(std::string filename, GLenum type)
+{
+	auto shader_src = Utilities::LoadShaderFromFile(filename);
+	auto _src = shader_src.c_str();
+	auto shader = glCreateShader(type);
+	glShaderSource(shader, 1, &_src, NULL);
+	glCompileShader(shader);
+	if (!CheckShaderError(shader))
+		throw "error compiling shader: " + filename;
+
+	return shader;
+}
+
 std::string Flow::Utilities::LoadShaderFromFile(std::string filename)
 {
 	std::ifstream file(filename);

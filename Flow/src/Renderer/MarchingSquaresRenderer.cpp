@@ -55,29 +55,9 @@ void Flow::MarchingSquaresRenderer::InitGL()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 
 	//compile the three basic shaders
-	auto vertexShaderSrc = Utilities::LoadShaderFromFile(vertexShaderFile_);
-	auto _src = vertexShaderSrc.c_str();
-	vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader_, 1, &_src, NULL);
-	glCompileShader(vertexShader_);
-	if (!Utilities::CheckShaderError(vertexShader_))
-		throw "error compiling vertex shader";
-
-	auto geometryShaderSrc = Utilities::LoadShaderFromFile(geometryShaderFile_);
-	_src = geometryShaderSrc.c_str();
-	geometryShader_ = glCreateShader(GL_GEOMETRY_SHADER);
-	glShaderSource(geometryShader_, 1, &_src, NULL);
-	glCompileShader(geometryShader_);
-	if (!Utilities::CheckShaderError(geometryShader_))
-		throw "error compiling fragment shader";
-
-	auto fragmentShaderSrc = Utilities::LoadShaderFromFile(fragmentShaderFile_);
-	_src = fragmentShaderSrc.c_str();
-	fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader_, 1, &_src, NULL);
-	glCompileShader(fragmentShader_);
-	if (!Utilities::CheckShaderError(fragmentShader_))
-		throw "error compiling fragment shader";
+	vertexShader_ = Utilities::CompileShader(vertexShaderFile_, GL_VERTEX_SHADER);
+	geometryShader_ = Utilities::CompileShader(geometryShaderFile_, GL_GEOMETRY_SHADER);
+	fragmentShader_ = Utilities::CompileShader(fragmentShaderFile_, GL_FRAGMENT_SHADER);
 
 	shaderProgram_ = glCreateProgram();
 	glAttachShader(shaderProgram_, vertexShader_);
@@ -95,7 +75,6 @@ void Flow::MarchingSquaresRenderer::InitGL()
 	glVertexAttribPointer(fieldAttrib_, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2*sizeof(float)));
 
 	cellW_uniform_ = glGetUniformLocation(shaderProgram_, "cellW");
-
 	cellH_uniform_ = glGetUniformLocation(shaderProgram_, "cellH");
 
 	glUseProgram(shaderProgram_);
