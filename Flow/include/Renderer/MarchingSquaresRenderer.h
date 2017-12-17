@@ -16,7 +16,7 @@ namespace Flow
 
 		FLOW_API void Draw();
 
-	private:
+	protected:
 
 		//Parameters
 		const unsigned int Resolution = 200;
@@ -27,13 +27,19 @@ namespace Flow
 		const std::string fragmentShaderFile_ = "marching_squares/fragment.glsl";
 
 		//Initialization methods
-		void InitGL();
+		void initGL();
+		void generateBuffers();
+		void compileShaders();
+		void linkShaders();
+		void enableAttributes();
 
 		//Render methods
+		void bindBuffers();
+		void prepareGeometry();
 
-		//For each point on the grid, evaluate the value of the metaballs
-		void evaluateFieldValues(int beginning, int end);
-		void preparePoints(int beginning, int end);
+		//clean up
+		void deleteShaders();
+		void deleteBuffers();
 
 		//Private parameters
 		int cellsX_, cellsY_;
@@ -46,18 +52,6 @@ namespace Flow
 		
 		//simulation
 		CopyBasedGrid grid_;
-		
-
-		//threads
-		int num_threads_ = 4;
-		int beginFlag_ = 0;
-		std::atomic<bool> running_;
-		std::atomic<unsigned int> threadStatus_;
-		std::mutex statusMutex_;
-		std::condition_variable condition_;
-		std::vector<std::thread> threads_;
-		void spawnThreads();
-		void workerThread(int num, int mask);
 
 		//timing information
 		double fieldElapse_, pointsElapsed_, gridElapsed_;

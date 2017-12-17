@@ -73,25 +73,16 @@ vector<int> Flow::FluidSystem::GetNearbyParticles(float x, float y)
 
 void FluidSystem::Update(float deltaTime)
 {
-	auto start = std::chrono::high_resolution_clock::now();
+	Utilities::ResetClock();
 	Grid.Update();
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> s = end - start;
-	gridTime_ += s.count();
+	gridTime_ += Utilities::Clock();
 
-	start = std::chrono::high_resolution_clock::now();
 	CalculateDensity();
-	end = std::chrono::high_resolution_clock::now();
-	s = end - start;
-	densityTime_ += s.count();
+	densityTime_ += Utilities::Clock();
 
-	start = std::chrono::high_resolution_clock::now();
 	CalculateForces();
-	end = std::chrono::high_resolution_clock::now();
-	s = end - start;
-	forcesTime_ += s.count();
+	forcesTime_ += Utilities::Clock();
 
-	start = std::chrono::high_resolution_clock::now();
 	//integrate
 	for (auto &p : *Particles)
 	{
@@ -101,9 +92,7 @@ void FluidSystem::Update(float deltaTime)
 
 	ResolveCollisions();
 
-	end = std::chrono::high_resolution_clock::now();
-	s = end - start;
-	remainderTime_ += s.count();
+	remainderTime_ += Utilities::Clock();
 	Frame++;
 }
 

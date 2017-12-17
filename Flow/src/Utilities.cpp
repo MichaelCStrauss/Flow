@@ -1,5 +1,7 @@
 #include "Utilities.h"
 
+std::chrono::high_resolution_clock::time_point Flow::Utilities::last;
+
 GLuint Flow::Utilities::CompileShader(std::string filename, GLenum type)
 {
 	auto shader_src = Utilities::LoadShaderFromFile(filename);
@@ -45,4 +47,17 @@ int Flow::Utilities::CheckShaderError(GLuint shader)
 float Flow::Utilities::LERP(float x0, float x1, float y0, float y1, float x)
 {
 	return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+}
+
+void Flow::Utilities::ResetClock()
+{
+	last = std::chrono::high_resolution_clock::now();
+}
+
+double Flow::Utilities::Clock()
+{
+	auto now = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> d = now - last;
+	last = std::chrono::high_resolution_clock::now();
+	return d.count();
 }
