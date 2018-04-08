@@ -37,10 +37,6 @@ namespace Flow
 		std::vector<std::thread> threads_;
 		void spawnThreads();
 		void workerThread(int num, int mask);
-
-		//timing information
-		double fieldElapse_, pointsElapsed_, gridElapsed_;
-		int frames_;
 	};
 }
 

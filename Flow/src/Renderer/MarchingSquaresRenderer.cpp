@@ -25,9 +25,9 @@ Flow::MarchingSquaresRenderer::~MarchingSquaresRenderer()
 	glDeleteBuffers(1, &vbo_);
 	glDeleteVertexArrays(1, &vao_);
 
-	std::cout << "Average Renderer Grid Evaluation Time: " << gridElapsed_ / (double)frames_ << std::endl;
-	std::cout << "Average Field Evaluation Time: " << fieldElapse_ / (double)frames_ << std::endl;
-	std::cout << "Average Points Preparation Time: " << pointsElapsed_ / (double)frames_ << std::endl;
+	std::cout << "Average Renderer Grid Evaluation Time: " << gridElapsed_ / (double)this->frames_ << std::endl;
+	std::cout << "Average Field Evaluation Time: " << fieldElapse_ / (double)this->frames_ << std::endl;
+	std::cout << "Average Points Preparation Time: " << pointsElapsed_ / (double)this->frames_ << std::endl;
 }
 
 void Flow::MarchingSquaresRenderer::initGL()

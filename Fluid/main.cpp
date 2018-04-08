@@ -61,7 +61,7 @@ int main()
 	system->Init();
 
 	auto bRenderer = Flow::BasicRenderer(system);
-	auto msRenderer = Flow::MarchingSquaresRenderer(system);
+	auto msRenderer = Flow::ThreadedMS(system);
 	bRenderer.setColorFunction(Flow::BasicRenderer::DensityGradient);
 
 	glfwSetKeyCallback(window, key_callback);
