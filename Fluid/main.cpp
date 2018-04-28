@@ -26,7 +26,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int main()
 {
 	std::cout << "Beginning Flow..." << std::endl;
-	const int WindowWidth = 1200, WindowHeight = 600;
+	const int WindowWidth = 1800, WindowHeight = 900;
 
 	glfwSetErrorCallback(error_callback);
 

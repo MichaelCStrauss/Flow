@@ -1,5 +1,9 @@
 #pragma once
 #include <Renderer/MarchingSquaresRenderer.h>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 namespace Flow
 {
