@@ -52,7 +52,7 @@ namespace Flow
 
 
 		//Fluid Constants
-		float TimeStep = 0.30f;
+		float TimeStep = 0.40f;
 		float Gravity = -10000;
 		float ParticleMass = 0.018;
 		float RestDensity = 1000;

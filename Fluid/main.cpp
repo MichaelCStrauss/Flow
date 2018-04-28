@@ -8,6 +8,7 @@
 #include <chrono>
 
 bool useBasic = false;
+bool paused = true;
 
 void error_callback(int error, const char* description)
 {
@@ -18,12 +19,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 		useBasic = !useBasic;
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+		paused = !paused;
 }
 
 int main()
 {
 	std::cout << "Beginning Flow..." << std::endl;
-	const int WindowWidth = 800, WindowHeight = 400;
+	const int WindowWidth = 1200, WindowHeight = 600;
 
 	glfwSetErrorCallback(error_callback);
 
@@ -74,7 +77,8 @@ int main()
 		auto start = std::chrono::high_resolution_clock::now();
 		glfwPollEvents();
 
-		system->Update(deltaTime);
+		if (!paused)
+			system->Update(deltaTime);
 
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
