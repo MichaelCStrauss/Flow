@@ -32,6 +32,7 @@ namespace Flow
 		float Width, Height;
 		int Frame = 0;
 
+		// Kernel smoothing radius
 		float h = 0.035;
 
 	private:

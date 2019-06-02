@@ -127,11 +127,6 @@ void FluidSystem::CalculateForces()
 		auto pressure = Vector2f();
 		auto viscosity = Vector2f();
 
-		if (p.ID == 1500)
-		{
-			p.Density++;
-		}
-
 		for (auto index : neighbours)
 		{
 			auto r = p.Position - (*Particles)[index].Position;
