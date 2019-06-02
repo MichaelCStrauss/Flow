@@ -5,9 +5,11 @@ This small library implements the Smoothed Particle Hydrodynamics model of fluid
 ## Demo
 A short video demonstrating the fluid, boundary conditions, and rendering using marching squares or the debug render (density):
 
-### [High Quality on Streamable](https://streamable.com/daxli)
+### [High Quality on Streamable](https://streamable.com/kwz6w)
 
 ![demo gif](https://thumbs.gfycat.com/VapidNippyIsabellineshrike-size_restricted.gif)
+
+
 
 
 
